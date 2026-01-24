@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lower Level Games</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1 class="main-title">Test your knowledge and earn blue stars (KG-G3)</h1>
+    <div class="data-container">
+
+      <div class="side-container health-container">
+        <h3>Health</h3>
+        <p id="health">❣️❣️</p>
+        <h3>Difficulty</h3>
+        <p id="difficulty">0</p>
+        <h3>Attampts</h3>
+        <p id="attempt">0</p>
+      </div>
+
+      <div class="q-container"></div>
+
+      <div class="side-container score-container">
+        <h3>Blue Stars Obtained</h3>
+        <p id="starCount">0</p>
+        <h3>Bonus</h3>
+        <p id="bonus">0</p>
+        <h3>Total</h3>
+        <P id="total">0</P>
+      </div>
+
+      <div class="btn-container">
+        <button class="start-btn" id="initBtn">Start</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Adding the quiz questions and answers to objects -->
+  <script>
+    // the background music
+    const bgSound1 = new Audio("sounds/happy-christmas-bgmusic.mp3");
+    bgSound1.loop = true;
+    bgSound1.volume = 0.4;
+
+    // Kindergarten (KG) Level – Flashcard Type
+    const level0 = [
+      { question: "What is this?", image: "images/quiz-images/keyboard.jpg", name: "keyboard", option1: "keyboard", option2: "mouse", option3: "monitor" },
+      { question: "What is this?", image: "images/quiz-images/apple.jpg", name: "apple", option1: "apple", option2: "banana", option3: "grape" },
+      { question: "What is this?", image: "images/quiz-images/mouse.jpg", name: "mouse", option1: "keyboard", option2: "speaker", option3: "mouse" },
+      { question: "What is this?", image: "images/quiz-images/leaf.png", name: "leaf", option1: "root", option2: "leaf", option3: "stem" },
+      { question: "What is this?", image: "images/quiz-images/sun.png", name: "sun", option1: "moon", option2: "planet", option3: "sun" },
+      { question: "What is this?", image: "images/quiz-images/flower.png", name: "flower", option1: "leaf", option2: "flower", option3: "root" },
+      { question: "What is this?", image: "images/quiz-images/cpu.jpg", name: "CPU", option1: "UPS", option2: "CPU", option3: "printer" },
+      { question: "What is this?", image: "images/quiz-images/non-living-things.jpg", name: "non-living things", option1: "non-living things", option2: "living things", option3: "plants" },
+      { question: "What is this?", image: "images/quiz-images/living-things.jpg", name: "living things", option1: "rocks", option2: "living things", option3: "machines" },
+      { question: "What is this?", image: "images/quiz-images/rain.jpg", name: "rain", option1: "snow", option2: "rain", option3: "wind" },
+      { question: "What is this?", image: "images/quiz-images/monitor.png", name: "monitor", option1: "printer", option2: "monitor", option3: "speaker" },
+      { question: "What is this?", image: "images/quiz-images/root.png", name: "root", option1: "stem", option2: "leaf", option3: "root" },
+      { question: "What is this?", image: "images/quiz-images/microphone.jpg", name: "microphone", option1: "speaker", option2: "CPU", option3: "microphone" },
+      { question: "What is this?", image: "images/quiz-images/printer.jpg", name: "printer", option1: "UPS", option2: "printer", option3: "monitor" },
+      { question: "What is this?", image: "images/quiz-images/seed.jpg", name: "seed", option1: "stem", option2: "seed", option3: "flower" },
+      { question: "What is this?", image: "images/quiz-images/speaker.jpg", name: "speaker", option1: "microphone", option2: "speaker", option3: "mouse" },
+      { question: "What is this?", image: "images/quiz-images/ups.jpg", name: "UPS", option1: "CPU", option2: "UPS", option3: "printer" },
+      { question: "What is this?", image: "images/quiz-images/stem.jpg", name: "stem", option1: "root", option2: "stem", option3: "leaf" },
+      { question: "What is this?", image: "images/quiz-images/flag-myanmar.jpg", name: "Myanmar", option1: "Japan", option2: "Myanmar", option3: "Thailand" },
+      { question: "What is this?", image: "images/quiz-images/ball.jpg", name: "ball", option1: "cube", option2: "ball", option3: "box" },
+    ];
+
+    // Grade 1 (G1) Level – Flashcard Type
+    const level1 = [
+      { question: "What is this?", image: "images/quiz-images/number-keys.png", name: "number keys", option1: "letter keys", option2: "number keys", option3: "arrow keys" },
+      { question: "What is this?", image: "images/quiz-images/caps-lock.jpg", name: "caps lock", option1: "caps lock", option2: "spacebar", option3: "delete key" },
+      { question: "What is this?", image: "images/quiz-images/triangle.png", name: "triangle", option1: "square", option2: "triangle", option3: "circle" },
+      { question: "What is this?", image: "images/quiz-images/arrow-keys.jpg", name: "arrow keys", option1: "spacebar", option2: "arrow keys", option3: "number keys" },
+      { question: "What is this?", image: "images/quiz-images/delete-key.jpg", name: "delete key", option1: "backspace", option2: "caps lock", option3: "delete key" },
+      { question: "What is this?", image: "images/quiz-images/letter-keys.jpg", name: "letter keys", option1: "letter keys", option2: "arrow keys", option3: "function keys" },
+      { question: "What is this?", image: "images/quiz-images/backspace.jpg", name: "backspace", option1: "spacebar", option2: "backspace", option3: "caps lock" },
+      { question: "What is this?", image: "images/quiz-images/spacebar.jpg", name: "spacebar", option1: "delete key", option2: "spacebar", option3: "arrow keys" },
+      { question: "What is this?", image: "images/quiz-images/water.jpg", name: "water", option1: "milk", option2: "juice", option3: "water" },
+      { question: "What is this?", image: "images/quiz-images/bus.jpg", name: "bus", option1: "car", option2: "bus", option3: "train" },
+      { question: "What is this?", image: "images/quiz-images/square.png", name: "square", option1: "circle", option2: "triangle", option3: "square" },
+      { question: "What is this?", image: "images/quiz-images/dog.jpg", name: "dog", option1: "cat", option2: "dog", option3: "rabbit" },
+      { question: "What is this?", image: "images/quiz-images/rainbow.jpg", name: "rainbow", option1: "sun", option2: "cloud", option3: "rainbow" },
+      { question: "What is this?", image: "images/quiz-images/car.png", name: "car", option1: "bike", option2: "car", option3: "bus" },
+      { question: "What is this?", image: "images/quiz-images/egg.jpg", name: "egg", option1: "egg", option2: "seed", option3: "nut" },
+      { question: "What is this?", image: "images/quiz-images/circle.png", name: "circle", option1: "square", option2: "circle", option3: "triangle" },
+      { question: "What is this?", image: "images/quiz-images/banana.jpg", name: "banana", option1: "apple", option2: "grape", option3: "banana" },
+      { question: "What is this?", image: "images/quiz-images/fish.jpg", name: "fish", option1: "fish", option2: "bird", option3: "frog" },
+      { question: "What is this?", image: "images/quiz-images/cloud.jpg", name: "cloud", option1: "rain", option2: "cloud", option3: "wind" },
+    ];
+
+    // Grade 2 (G2) Level – Flashcard Type
+    const level2 = [
+      { question: "What is this?", image: "images/quiz-images/lion.jpg", name: "lion", option1: "lion", option2: "tiger", option3: "bear" },
+      { question: "What is this?", image: "images/quiz-images/flag-usa.jpg", name: "USA", option1: "UK", option2: "France", option3: "USA" },
+      { question: "What is this?", image: "images/quiz-images/lightning.jpg", name: "lightning", option1: "rain", option2: "lightning", option3: "snow" },
+      { question: "What is this?", image: "images/quiz-images/frog.jpg", name: "frog", option1: "fish", option2: "frog", option3: "snake" },
+      { question: "What is this?", image: "images/quiz-images/earth.jpg", name: "Earth", option1: "Mars", option2: "Earth", option3: "Jupiter" },
+      { question: "What is this?", image: "images/quiz-images/robot.jpg", name: "robot", option1: "robot", option2: "car", option3: "computer" },
+      { question: "What is this?", image: "images/quiz-images/flag-china.png", name: "China", option1: "China", option2: "Japan", option3: "Korea" },
+      { question: "What is this?", image: "images/quiz-images/volcano.jpg", name: "volcano", option1: "mountain", option2: "volcano", option3: "hill" },
+    ];
+
+    // Grade 3 (G3) Level – Combined & Shuffled
+    const level3 = [
+      { question: "Which device is used for typing?", image: "images/default2.jpg", name: "keyboard", option1: "mouse", option2: "keyboard", option3: "monitor" },
+      { question: "Which is an input device?", image: "images/default2.jpg", name: "mouse", option1: "printer", option2: "mouse", option3: "speaker" },
+      { question: "Which is an output device?", image: "images/default2.jpg", name: "printer", option1: "speaker", option2: "printer", option3: "CPU" },
+      { question: "Which is an output device?", image: "images/default2.jpg", name: "monitor", option1: "keyboard", option2: "mouse", option3: "monitor" },
+      { question: "What is the brain of a computer?", image: "images/default2.jpg", name: "CPU", option1: "monitor", option2: "CPU", option3: "keyboard" },
+      { question: "What is this?", image: "images/quiz-images/system-unit.jpg", name: "system unit", option1: "system unit", option2: "keyboard", option3: "monitor" },
+      { question: "What is this?", image: "images/quiz-images/motherboard.jpg", name: "motherboard", option1: "RAM", option2: "motherboard", option3: "hard disk" },
+      { question: "What is this?", image: "images/quiz-images/ram.png", name: "RAM", option1: "ROM", option2: "CPU", option3: "RAM" },
+      { question: "What is this?", image: "images/quiz-images/hard-disk.jpg", name: "hard disk", option1: "RAM", option2: "hard disk", option3: "power supply" },
+      { question: "What is this?", image: "images/quiz-images/heatsink-fan.jpg", name: "heatsink and fan", option1: "power supply", option2: "heatsink and fan", option3: "video card" },
+      { question: "What is this?", image: "images/quiz-images/power-supply.jpg", name: "power supply", option1: "CPU", option2: "motherboard", option3: "power supply" },
+      { question: "What is this?", image: "images/quiz-images/video-card.jpg", name: "video card", option1: "sound card", option2: "RAM", option3: "video card" },
+      { question: "What is this?", image: "images/quiz-images/sound-card.jpg", name: "sound card", option1: "video card", option2: "sound card", option3: "CPU" },
+      { question: "Which planet is known as the Red Planet?", image: "images/default2.jpg", name: "Mars", option1: "Earth", option2: "Mars", option3: "Jupiter" },
+      { question: "Who was the first person to walk on the Moon?", image: "images/default2.jpg", name: "Neil Armstrong", option1: "Albert Einstein", option2: "Neil Armstrong", option3: "Isaac Newton" },
+      { question: "What is the largest ocean on Earth?", image: "images/default2.jpg", name: "Pacific Ocean", option1: "Atlantic Ocean", option2: "Indian Ocean", option3: "Pacific Ocean" },
+      { question: "Which gas do plants release during photosynthesis?", image: "images/default2.jpg", name: "oxygen", option1: "oxygen", option2: "carbon dioxide", option3: "nitrogen" },
+      { question: "Who wrote 'Romeo and Juliet'?", image: "images/default2.jpg", name: "William Shakespeare", option1: "Mark Twain", option2: "William Shakespeare", option3: "Charles Dickens" },
+      { question: "Which country has the Great Wall?", image: "images/default2.jpg", name: "China", option1: "India", option2: "China", option3: "Japan" },
+      { question: "Which is the largest continent?", image: "images/default2.jpg", name: "Asia", option1: "Africa", option2: "Asia", option3: "Europe" },
+      { question: "Which organ in our body pumps blood?", image: "images/default2.jpg", name: "heart", option1: "lungs", option2: "heart", option3: "stomach" },
+      { question: "What is H2O commonly called?", image: "images/default2.jpg", name: "water", option1: "water", option2: "oxygen", option3: "steam" },
+      { question: "Which animal is known as the king of the jungle?", image: "images/default2.jpg", name: "lion", option1: "tiger", option2: "lion", option3: "elephant" },
+    ];
+    
+  </script>
+
+  <!-- calling the global script to use in this game -->
+  <script src="script.js"></script>
+</body>
+</html>

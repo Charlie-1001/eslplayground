@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flashcards</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    header {
+      display: flex;
+      height: 50px;
+      width: 100%;
+      background-color: black;
+      color: white;
+      align-items: center;
+      padding: 0 1rem;
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+
+    header h1 {
+      flex: 1;
+    }
+
+    header select, header button {
+      height: 80%;
+      cursor: pointer;
+      padding: 0.5rem;
+      margin-left: 1rem;
+      border-radius: 0.5rem;
+      outline: none;
+      font-size: 1rem;
+    }
+
+    header select {
+      width: 20%;
+    }
+
+    header button {
+      background-color: yellow;
+    }
+
+    #container {
+      height: calc(100vh - 50px);
+      width: 100%;
+      margin-top: 50px;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      /* grid-template-rows: repeat(2, 1fr); */
+      gap: 5px;
+      border: 2px solid blue;
+      padding: 4rem 1rem;
+    }
+
+    .img-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border: 1px solid grey;
+      box-shadow: 3px 3px 5px rgb(123, 122, 122);
+      overflow: hidden;
+    }
+
+    .images {
+      width: 100%;
+      height: 100%;
+    }
+
+    .meaning {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      color: yellow;
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.664);
+      padding: 0 0.5rem;
+    }
+
+    .hide-items {
+      display: none;
+    }
+
+    .reading {
+      display: block;
+      background-color: #f0f0f0;
+      color: black;
+      font-size: 3rem;
+      top: 50%;
+      transform: translateY(-50%);
+      height: fit-content;
+    }
+
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Oxford Phonics World 2</h1>
+    <select>
+      <option value="unit1">Unit 1</option>
+      <option value="unit2">Unit 2</option>
+      <option value="unit3">Unit 3</option>
+      <option value="unit4">Unit 4</option>
+      <option value="unit5">Unit 5</option>
+      <option value="unit6">Unit 6</option>
+      <option value="unit7">Unit 7</option>
+      <option value="unit8">Unit 8</option>
+    </select>
+    <button id="toggleText">Hide Text</button>
+    <button id="reading">Reading</button>
+  </header>
+
+  <main id="container"></main>
+
+  <!-- The script -->
+  <script>
+    const data = [
+      {unit: "unit1", flashcards: [
+        { name: "cat", image: "../assets/images/cat.png" },
+        { name: "ant", image: "../assets/images/ant.png" },
+        { name: "yak", image: "../assets/images/yak.png" },
+        { name: "ax", image: "../assets/images/ax.png" },
+        { name: "ram", image: "../assets/images/ram.png" },
+        { name: "jam", image: "../assets/images/jam.png" },
+        { name: "yam", image: "../assets/images/yam.png" },
+        { name: "dam", image: "../assets/images/dam.png" },
+        { name: "fan", image: "../assets/images/fan.png" },
+        { name: "man", image: "../assets/images/man.png" },
+        { name: "pan", image: "../assets/images/pan.png" },
+        { name: "can", image: "../assets/images/can.png" },
+      ]}, 
+      {unit: "unit2", flashcards: [
+        { name: "dad", image: "../assets/images/dad.png" },
+        { name: "pad", image: "../assets/images/pad.png" },
+        { name: "bag", image: "../assets/images/bag.png" },
+        { name: "rag", image: "../assets/images/rag.png" },
+        { name: "cap", image: "../assets/images/cap.png" },
+        { name: "map", image: "../assets/images/map.png" },
+        { name: "nap", image: "../assets/images/nap.png" },
+        { name: "tap", image: "../assets/images/tap.png" },
+        { name: "bat", image: "../assets/images/bat.png" },
+        { name: "rat", image: "../assets/images/rat.png" },
+        { name: "hat", image: "../assets/images/hat.png" },
+        { name: "mat", image: "../assets/images/mat.png" },
+      ]},
+      {unit: "unit3", flashcards: [
+        { name: "web", image: "../assets/images/web.png" },
+        { name: "egg", image: "../assets/images/egg.png" },
+        { name: "vet", image: "../assets/images/vet.png" },
+        { name: "ten", image: "../assets/images/ten.png" },
+        { name: "jet", image: "../assets/images/jet.png" },
+        { name: "net", image: "../assets/images/net.png" },
+        { name: "wet", image: "../assets/images/wet.png" },
+        { name: "pet", image: "../assets/images/pet.png" },
+        { name: "hen", image: "../assets/images/hen.png" },
+        { name: "pen", image: "../assets/images/pen.png" },
+        { name: "red", image: "../assets/images/red.png" },
+        { name: "bed", image: "../assets/images/bed.png" },
+      ]},
+      {unit: "unit4", flashcards: [
+        { name: "hip", image: "../assets/images/hip.png" },
+        { name: "ink", image: "../assets/images/ink.png" },
+        { name: "zip", image: "../assets/images/zip.png" },
+        { name: "in", image: "../assets/images/in.png" },
+        { name: "lip", image: "../assets/images/lip.png" },
+        { name: "tip", image: "../assets/images/tip.png" },
+        { name: "sip", image: "../assets/images/sip.png" },
+        { name: "rip", image: "../assets/images/rip.png" },
+        { name: "bib", image: "../assets/images/bib.png" },
+        { name: "rib", image: "../assets/images/rib.png" },
+        { name: "kid", image: "../assets/images/kid.png" },
+        { name: "lid", image: "../assets/images/lid.png" },
+      ]},
+      {unit: "unit5", flashcards: [
+        { name: "pin", image: "../assets/images/pin.png" },
+        { name: "fin", image: "../assets/images/fin.png" },
+        { name: "bin", image: "../assets/images/bin.png" },
+        { name: "win", image: "../assets/images/win.png" },
+        { name: "fig", image: "../assets/images/fig.png" },
+        { name: "wig", image: "../assets/images/wig.png" },
+        { name: "big", image: "../assets/images/big.png" },
+        { name: "dig", image: "../assets/images/dig.png" },
+        { name: "pit", image: "../assets/images/pit.png" },
+        { name: "hit", image: "../assets/images/hit.png" },
+        { name: "six", image: "../assets/images/six.png" },
+        { name: "mix", image: "../assets/images/mix.png" },
+      ]},
+      {unit: "unit6", flashcards: [
+        { name: "fox", image: "../assets/images/fox.png" },
+        { name: "log", image: "../assets/images/log.png" },
+        { name: "ox", image: "../assets/images/ox.png" },
+        { name: "rod", image: "../assets/images/rod.png" },
+        { name: "pot", image: "../assets/images/pot.png" },
+        { name: "hot", image: "../assets/images/hot.png" },
+        { name: "cot", image: "../assets/images/cot.png" },
+        { name: "dot", image: "../assets/images/dot.png" },
+        { name: "top", image: "../assets/images/top.png" },
+        { name: "mop", image: "../assets/images/mop.png" },
+        { name: "hop", image: "../assets/images/hop.png" },
+        { name: "pop", image: "../assets/images/pop.png" },
+      ]},
+      {unit: "unit7", flashcards: [
+        { name: "sun", image: "../assets/images/sun.png" },
+        { name: "up", image: "../assets/images/up.png" },
+        { name: "jug", image: "../assets/images/jug.png" },
+        { name: "hug", image: "../assets/images/hug.png" },
+        { name: "bug", image: "../assets/images/bug.png" },
+        { name: "rug", image: "../assets/images/rug.png" },
+        { name: "mug", image: "../assets/images/mug.png" },
+        { name: "bud", image: "../assets/images/bud.png" },
+        { name: "mud", image: "../assets/images/mud.png" },
+        { name: "pup", image: "../assets/images/pup.png" },
+        { name: "cup", image: "../assets/images/cup.png" },
+      ]},
+      {unit: "unit8", flashcards: [
+        { name: "nut", image: "../assets/images/nut.png" },
+        { name: "hut", image: "../assets/images/hut.png" },
+        { name: "cut", image: "../assets/images/cut.png" },
+        { name: "cub", image: "../assets/images/cub.png" },
+        { name: "tub", image: "../assets/images/tub.png" },
+        { name: "gum", image: "../assets/images/gum.png" },
+        { name: "hum", image: "../assets/images/hum.png" },
+        { name: "bun", image: "../assets/images/bun.png" },
+        { name: "run", image: "../assets/images/run.png" },
+        { name: "fun", image: "../assets/images/fun.png" },
+      ]},
+    ];
+    
+    const container = document.getElementById("container");
+    const toggleTextBtn = document.getElementById("toggleText");
+    const readingBtn = document.getElementById("reading");
+    const unitSelect = document.querySelector("header select");
+
+    function loadImages(unit = "unit1") {
+      const selectedUnit = data.find(u => u.unit === unit);
+      selectedUnit.flashcards.forEach(item => {
+        const imgFrame = document.createElement("div");
+        const image = document.createElement("img");
+        const meaning = document.createElement("h1");
+
+        imgFrame.className = "img-frame";
+        image.src = item.image;
+        image.className = "images";
+        meaning.className = "meaning";
+        meaning.textContent = item.name;
+        imgFrame.appendChild(image);
+        imgFrame.appendChild(meaning);
+        container.appendChild(imgFrame);
+      });
+    }
+
+    loadImages();
+    
+    unitSelect.addEventListener("change", (e) => {
+      container.innerHTML = "";
+      loadImages(e.target.value);
+    })
+
+    toggleTextBtn.addEventListener("click", () => {
+        toggleTextBtn.textContent = toggleTextBtn.textContent === "Hide Text" ? "Show Text" : "Hide Text";
+        document.querySelectorAll(".meaning").forEach(meaning => {
+          meaning.classList.toggle("hide-items");
+        })
+    });
+
+    readingBtn.addEventListener("click", () => {
+      readingBtn.textContent = readingBtn.textContent === "Reading" ? "Studying" : "Reading";
+      document.querySelectorAll(".meaning").forEach(meaning => {
+        meaning.classList.toggle("reading");
+      })
+      document.querySelectorAll(".images").forEach(image => {
+        image.classList.toggle("hide-items");
+      })
+    });
+
+  </script>
+</body>
+</html>

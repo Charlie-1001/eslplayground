@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Higher Level Games</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1 class="main-title">Test your knowledge and earn blue stars (G4-G7)</h1>
+    <div class="data-container">
+
+      <div class="side-container health-container">
+        <h3>Health</h3>
+        <p id="health">❣️❣️</p>
+        <h3>Difficulty</h3>
+        <p id="difficulty">0</p>
+        <h3>Attampts</h3>
+        <p id="attempt">0</p>
+      </div>
+
+      <div class="q-container"></div>
+
+      <div class="side-container score-container">
+        <h3>Blue Stars Obtained</h3>
+        <p id="starCount">0</p>
+        <h3>Bonus</h3>
+        <p id="bonus">0</p>
+        <h3>Total</h3>
+        <P id="total">0</P>
+      </div>
+
+      <div class="btn-container">
+        <button class="start-btn" id="initBtn">Start</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Adding the quiz questions and answers to objects -->
+  <script>
+    // the background music
+    const bgSound1 = new Audio("sounds/happy-competition-bgmusic.mp3");
+    bgSound1.loop = true;
+    bgSound1.volume = 0.4;
+
+    // For G4
+    const level0 = [
+      { question: "Which part of the plant makes food?", image: "images/default2.jpg", name: "Leaf", option1: "Root", option2: "Leaf", option3: "Stem" },
+      { question: "What is Roblox?", image: "images/quiz-images/roblox.png", name: "Software", option1: "Hardware", option2: "Software", option3: "Operating System" },
+      { question: "Which festival is known as the festival of lights?", image: "images/default2.jpg", name: "Diwali", option1: "Christmas", option2: "Diwali", option3: "Eid" },
+      { question: "What do we breathe in to stay alive?", image: "images/quiz-images/oxygen.jpg", name: "Oxygen", option1: "Carbon dioxide", option2: "Oxygen", option3: "Hydrogen" },
+      { question: "How many legs does a spider have?", image: "images/default2.jpg", name: "8", option1: "6", option2: "8", option3: "10" },
+      { question: "What is a monitor?", image: "images/quiz-images/monitor.png", name: "Hardware", option1: "Hardware", option2: "Software", option3: "Application" },
+      { question: "What is computer memory measured in?", image: "images/quiz-images/computer-memory.png", name: "Bytes", option1: "Bytes", option2: "Bits", option3: "Hertz" },
+      { question: "Which animal is known as the King of the Jungle?", image: "images/quiz-images/lion.jpg", name: "Lion", option1: "Tiger", option2: "Lion", option3: "Elephant" },
+      { question: "Which direction does the sun rise from?", image: "images/default2.jpg", name: "East", option1: "West", option2: "North", option3: "East" },
+      { question: "What is Facebook?", image: "images/quiz-images/facebook.png", name: "Application Software", option1: "Operating System", option2: "Hardware", option3: "Application Software" },
+      { question: "Which is the fastest land animal?", image: "images/default2.jpg", name: "Cheetah", option1: "Leopard", option2: "Cheetah", option3: "Horse" },
+      { question: "Which of these is a storage device?", image: "images/quiz-images/harddisk.jpg", name: "Hard disk", option1: "Keyboard", option2: "Hard disk", option3: "Monitor" },
+      { question: "What do bees produce?", image: "images/quiz-images/honey.png", name: "Honey", option1: "Milk", option2: "Honey", option3: "Juice" },
+      { question: "What is anti-virus software?", image: "images/quiz-images/antivirus.png", name: "Utility Software", option1: "Utility Software", option2: "Hardware", option3: "Application Software" },
+      { question: "What is the operating system of most phones?", image: "images/quiz-images/android.png", name: "Android", option1: "iOS", option2: "Windows", option3: "Android" },
+      { question: "What shape is a football (soccer ball)?", image: "images/default2.jpg", name: "Spherical", option1: "Cylindrical", option2: "Spherical", option3: "Cube" },
+      { question: "Which part of your body helps you think?", image: "images/default2.jpg", name: "Brain", option1: "Lungs", option2: "Brain", option3: "Heart" },
+      { question: "Which sense organ helps us smell things?", image: "images/default2.jpg", name: "Nose", option1: "Ear", option2: "Eye", option3: "Nose" },
+      { question: "Which planet is closest to the Sun?", image: "images/default2.jpg", name: "Mercury", option1: "Mercury", option2: "Venus", option3: "Mars" },
+      { question: "What is Windows?", image: "images/quiz-images/windows.jpg", name: "Operating System", option1: "Application", option2: "Operating System", option3: "Utility" },
+      { question: "How many megabytes (MB) are in 1 gigabyte (GB)?", image: "images/default2.jpg", name: "1024 MB", option1: "1000 MB", option2: "1024 MB", option3: "2048 MB" },
+      { question: "Which is the largest animal on Earth?", image: "images/default2.jpg", name: "Blue Whale", option1: "Elephant", option2: "Blue Whale", option3: "Giraffe" },
+      { question: "Which bird is a universal symbol of peace?", image: "images/default2.jpg", name: "Dove", option1: "Crow", option2: "Dove", option3: "Owl" },
+      { question: "Which body part pumps blood throughout the body?", image: "images/default2.jpg", name: "Heart", option1: "Lungs", option2: "Heart", option3: "Brain" },
+      { question: "Which gas do plants take in from the air?", image: "images/default2.jpg", name: "Carbon dioxide", option1: "Oxygen", option2: "Carbon dioxide", option3: "Nitrogen" },
+      { question: "What is the name of our galaxy?", image: "images/default2.jpg", name: "Milky Way", option1: "Milky Way", option2: "Andromeda", option3: "Solar System" },
+      { question: "What do you call 8 bits?", image: "images/quiz-images/byte.jpg", name: "A byte", option1: "A byte", option2: "A bit", option3: "A word" },
+      { question: "Which festival is celebrated with colors in India?", image: "images/default2.jpg", name: "Holi", option1: "Holi", option2: "Diwali", option3: "Eid" },
+      { question: "Which planet do we live on?", image: "images/quiz-images/earth.jpg", name: "Earth", option1: "Earth", option2: "Mars", option3: "Venus" },
+      { question: "What is the capital of Japan?", image: "images/default2.jpg", name: "Tokyo", option1: "Beijing", option2: "Seoul", option3: "Tokyo" },
+      { question: "Which is the tallest animal in the world?", image: "images/quiz-images/giraffe.jpg", name: "Giraffe", option1: "Elephant", option2: "Giraffe", option3: "Horse" },
+      { question: "What is Mac OS?", image: "images/quiz-images/macos.jpg", name: "Operating System", option1: "Operating System", option2: "Software", option3: "Application" },
+      { question: "How many days are there in a leap year?", image: "images/default2.jpg", name: "366", option1: "365", option2: "366", option3: "364" }
+    ];
+
+    // For G5
+    const level1 = [
+      { question: "Which one is an operating system?", image: "images/quiz-images/ios.jpg", name: "iOS", option1: "iOS", option2: "Windows", option3: "Android" },
+      { question: "Which is the fastest land animal?", image: "images/default2.jpg", name: "Cheetah", option1: "Leopard", option2: "Cheetah", option3: "Horse" },
+      { question: "What type of network connects a Bluetooth speaker?", image: "images/quiz-images/bluetooth-speaker.jpg", name: "PAN", option1: "LAN", option2: "PAN", option3: "WAN" },
+      { question: "Which planet is closest to the Sun?", image: "images/default2.jpg", name: "Mercury", option1: "Mercury", option2: "Venus", option3: "Mars" },
+      { question: "What do you call a group of computers interconnected together?", image: "images/quiz-images/network.jpg", name: "A computer network", option1: "A computer network", option2: "A server", option3: "A workstation" },
+      { question: "What network is formed when computers are interconnected over a city?", image: "images/quiz-images/man.png", name: "MAN", option1: "LAN", option2: "MAN", option3: "WAN" },
+      { question: "What do you call the main computer that provides information to connected computers?", image: "images/quiz-images/server.jpg", name: "A server", option1: "A server", option2: "Workstation", option3: "Router" },
+      { question: "What network is formed when computers are interconnected in a building?", image: "images/default2.jpg", name: "LAN", option1: "LAN", option2: "MAN", option3: "WAN" },
+      { question: "What is a GUI?", image: "images/default2.jpg", name: "Graphical User Interface", option1: "Graphical User Interface", option2: "General User Interface", option3: "Global User Interface" },
+      { question: "What do you call computers that request information from a server?", image: "images/default2.jpg", name: "Workstations", option1: "A server", option2: "Workstations", option3: "Client server" },
+      { question: "What type of interface is Windows?", image: "images/default2.jpg", name: "GUI", option1: "GUI", option2: "CUI", option3: "Command Line" },
+      { question: "Which network includes the Internet?", image: "images/quiz-images/internet.jpg", name: "WAN", option1: "LAN", option2: "MAN", option3: "WAN" },
+      { question: "Which one is an operating system?", image: "images/quiz-images/macos.jpg", name: "Mac OS", option1: "Mac OS", option2: "Linux", option3: "Windows" },
+      { question: "Which direction does the sun rise from?", image: "images/default2.jpg", name: "East", option1: "West", option2: "North", option3: "East" },
+      { question: "How many legs does a spider have?", image: "images/default2.jpg", name: "8", option1: "6", option2: "8", option3: "10" },
+      { question: "Which sense organ helps us smell things?", image: "images/default2.jpg", name: "Nose", option1: "Ear", option2: "Eye", option3: "Nose" },
+      { question: "Which is the tallest animal in the world?", image: "images/quiz-images/giraffe.jpg", name: "Giraffe", option1: "Elephant", option2: "Giraffe", option3: "Horse" },
+      { question: "Which is the fastest cable used in a computer network?", image: "images/quiz-images/fiber_optic.jpg", name: "Fiber-optic cable", option1: "Coaxial cable", option2: "Ethernet cable", option3: "Fiber-optic cable" },
+      { question: "What network is formed when computers are interconnected worldwide?", image: "images/quiz-images/internet.jpg", name: "WAN", option1: "LAN", option2: "MAN", option3: "WAN" },
+      { question: "What is the medium through which servers and workstations share data?", image: "images/default2.jpg", name: "Communication channel", option1: "Communication channel", option2: "Cable", option3: "Bus" }
+    ];
+
+    // For G6
+    const level2 = [
+      { question: "What type of device is a keyboard?", image: "images/quiz-images/keyboard.jpg", name: "Input device", option1: "Input device", option2: "Output device", option3: "Storage device" },
+      { question: "Which part of the plant makes food?", image: "images/default2.jpg", name: "Leaf", option1: "Root", option2: "Leaf", option3: "Stem" },
+      { question: "What type of device is a CPU?", image: "images/quiz-images/cpu.jpg", name: "Processing device", option1: "Input device", option2: "Processing device", option3: "Output device" },
+      { question: "What is BIOS?", image: "images/quiz-images/bios.jpg", name: "Basic Input Output System", option1: "Basic Input Output System", option2: "Binary Input Operating System", option3: "Basic Internal Output System" },
+      { question: "Which of the following is a function of an operating system?", image: "images/default2.jpg", name: "Process management", option1: "Process management", option2: "Hardware manufacturing", option3: "Software coding" },
+      { question: "What type of device is a speaker?", image: "images/quiz-images/speaker.jpg", name: "Output device", option1: "Input device", option2: "Output device", option3: "Storage device" },
+      { question: "What type of device is a hard disk?", image: "images/quiz-images/harddisk.jpg", name: "Storage device", option1: "Storage device", option2: "Processing device", option3: "Input device" },
+      { question: "What type of device is a DVD?", image: "images/quiz-images/dvd.jpg", name: "Storage device", option1: "Storage device", option2: "Output device", option3: "Input device" },
+      { question: "In which device is BIOS stored?", image: "images/quiz-images/rom.jpg", name: "In ROM", option1: "In RAM", option2: "In ROM", option3: "On Hard Disk" },
+      { question: "What type of device is a microphone?", image: "images/quiz-images/microphone.jpg", name: "Input device", option1: "Input device", option2: "Output device", option3: "Processing device" },
+      { question: "Which sense organ helps us smell things?", image: "images/default2.jpg", name: "Nose", option1: "Ear", option2: "Eye", option3: "Nose" },
+      { question: "Which part of your body helps you think?", image: "images/default2.jpg", name: "Brain", option1: "Lungs", option2: "Brain", option3: "Heart" },
+      { question: "Which is the largest animal on Earth?", image: "images/default2.jpg", name: "Blue Whale", option1: "Elephant", option2: "Blue Whale", option3: "Giraffe" },
+      { question: "Which festival is celebrated with colors in India?", image: "images/default2.jpg", name: "Holi", option1: "Holi", option2: "Diwali", option3: "Eid" },
+      { question: "How many days are there in a leap year?", image: "images/default2.jpg", name: "366", option1: "365", option2: "366", option3: "364" }
+    ];
+
+    // For G7
+    const level3 = [
+      { question: "What topology is this?", image: "images/quiz-images/ring_topology.jpg", name: "Ring topology", option1: "Ring topology", option2: "Star topology", option3: "Bus topology" },
+      { question: "Which is the tallest animal in the world?", image: "images/quiz-images/giraffe.jpg", name: "Giraffe", option1: "Elephant", option2: "Giraffe", option3: "Horse" },
+      { question: "What topology is this?", image: "images/quiz-images/bus_topology.jpg", name: "Bus topology", option1: "Bus topology", option2: "Star topology", option3: "Ring topology" },
+      { question: "Which planet do we live on?", image: "images/quiz-images/earth.jpg", name: "Earth", option1: "Earth", option2: "Mars", option3: "Venus" },
+      { question: "What topology is this?", image: "images/quiz-images/star_topology.png", name: "Star topology", option1: "Bus topology", option2: "Star topology", option3: "Ring topology" },
+      { question: "Which one is an operating system?", image: "images/quiz-images/macos.jpg", name: "Mac OS", option1: "Mac OS", option2: "Linux", option3: "Windows" },
+      { question: "Which one is an operating system?", image: "images/quiz-images/ios.jpg", name: "iOS", option1: "iOS", option2: "Windows", option3: "Android" },
+      { question: "Which is the fastest cable used in a computer network?", image: "images/quiz-images/fiber_optic.jpg", name: "Fiber-optic cable", option1: "Coaxial cable", option2: "Ethernet cable", option3: "Fiber-optic cable" },
+      { question: "Which body part pumps blood throughout the body?", image: "images/default2.jpg", name: "Heart", option1: "Lungs", option2: "Heart", option3: "Brain" },
+      { question: "Which bird is a universal symbol of peace?", image: "images/default2.jpg", name: "Dove", option1: "Crow", option2: "Dove", option3: "Owl" },
+      { question: "Which festival is known as the festival of lights?", image: "images/default2.jpg", name: "Diwali", option1: "Christmas", option2: "Diwali", option3: "Eid" },
+      { question: "Which is the fastest land animal?", image: "images/default2.jpg", name: "Cheetah", option1: "Leopard", option2: "Cheetah", option3: "Horse" }
+    ];
+    
+  </script>
+
+  <!-- calling the global script to use in this game -->
+  <script src="script.js"></script>
+  
+</body>
+</html>

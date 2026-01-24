@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduTalks</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      ::-webkit-scrollbar {
+        display: none;
+      }
+
+      html, body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+
+      .container {
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      h1 {
+        height: 10%;
+        background: linear-gradient(to left, rgb(0, 174, 255), rgb(211, 15, 195));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgb(248, 224, 6);
+      }
+
+      .chat-section {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 90%;
+      }
+
+      .image {
+        height: 100%;
+        width: 60%;;
+        position: relative;
+      }
+
+      .image img {
+        height: 100%;
+        width: 100%;
+      }
+
+      /* The dialog boxes style */
+      .dialog {
+        position: absolute;
+        top: 0;
+        --width: 50%;
+        left: calc((100% - var(--width)) / 2);
+        height: 60%;
+        width: var(--width);
+      }
+
+      .di-b, .di-g {
+        position: relative;
+        color: white;
+        padding: 10px;
+        border-radius: 10px;
+        width: fit-content;
+        max-width: 300px;
+        margin: 30px 0;
+        background-color: rgb(14, 1, 49); /* bubble color */
+      }
+
+      .di-b {
+        border: 2px solid rgb(0, 174, 255);
+        box-shadow: 2px 0 10px rgb(0, 174, 255);
+      }
+
+      .di-g {
+        border: 2px solid rgb(211, 15, 195);
+        box-shadow: -2px 0 10px rgb(211, 15, 195);
+        margin-left: auto;
+      }
+
+      .di-b::after, .di-g::after {
+        content: "";
+        position: absolute;
+        bottom: -50px;        /* move tail below the bubble */
+        width: 0;
+        height: 0;
+      }
+
+      .di-b::after {
+        left: 20px;           /* horizontal position */
+        border-left: 1px solid transparent;   /* slanted left side */
+        border-right: 20px solid transparent;   /* slanted right side */
+        border-top: 50px solid rgb(0, 174, 255);        /* colored border = tail length */
+      }
+
+      .di-g::after {
+        right: 20px;           /* horizontal position */
+        border-left: 20px solid transparent;   /* slanted left side */
+        border-right: 1px solid transparent;   /* slanted right side */
+        border-top: 50px solid rgb(211, 15, 195);        /* colored border = tail length */
+      }
+
+      /* The chat panels */
+      .chat {
+        width: 20%;
+        height: 100%;
+        background-color: rgb(14, 1, 49);
+      }
+
+      .chat.boy {
+        border: 2px solid rgb(0, 174, 255);
+        box-shadow: 2px 0 10px rgb(0, 174, 255);
+        z-index: 1;
+      }
+
+      .chat.girl {
+        border: 2px solid rgb(211, 15, 195);
+        box-shadow: -2px 0 10px rgb(211, 15, 195);
+        z-index: 1;
+      }
+
+      .chat h3 {
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+      }
+
+      .chat.boy h3 {
+        background-color: rgb(0, 174, 255);
+      }
+
+      .chat.girl h3 {
+        background-color: rgb(211, 15, 195);
+        
+      }
+
+      /* The questions container */
+      .q-container {
+        color: white;
+        list-style: none;
+        height: 100%;
+        overflow-y: auto;
+      }
+
+      .q-boy-girl {
+        border-radius: 3px;
+        margin: 6px;
+        font-size: 0.8rem;
+        padding: 2px;
+        cursor: pointer;
+      }
+
+      .q-boy-girl:hover {
+        background-color: rgb(54, 15, 161);
+      }
+
+      .q-boy {
+        border: 1px solid rgb(0, 174, 255);
+        box-shadow: 0 0 3px rgb(0, 174, 255);
+      }
+
+      .q-girl {
+        border: 1px solid rgb(211, 15, 195);
+        box-shadow: 0 0 3px rgb(211, 15, 195);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>EduTalks</h1>
+
+      <div class="chat-section">
+        <div class="chat boy">
+          <h3>Ask Ms. Genius</h3>
+          <ul class="q-container" id="qBoy"></ul>
+        </div>
+
+        <div class="image">
+          <div class="dialog">
+            <div class="di-b" id="diB">"All set and ready! Ask away 😎🎯"</div>
+            <div class="di-g" id="diG">Bring it on! I’m all ears 🤓🎉</div>
+          </div>
+          <img src="bg-image.png">
+        </div>
+
+        <div class="chat girl">
+          <h3>Ask Mr. Genius</h3>
+          <ul class="q-container" id="qGirl"></ul>
+        </div>
+        
+      </div>
+    </div>
+
+    <!-- the Javascript section -->
+    <script>
+      const data = [
+        // School
+        { Q: "What's your school name?", A: "It's NPS." },
+        { Q: "What's NPS?", A: "It's Nelson Private School." },
+        { Q: "Who is your school's founder?", A: "Tr. Nelson." },
+        { Q: "Who is your principal?", A: "Tr. Naw Thida Kyaw." },
+        { Q: "Who is your teaching supervisor?", A: "Tr. Thazin." },
+        // ICT
+        { Q: "What's the brain of a computer?", A: "It's the CPU." },
+        { Q: "What does CPU stand for?", A: "It stands for Central Processing Unit." },
+        { Q: "What does RAM stand for?", A: "It stands for Random Access Memory." },
+        { Q: "What does ROM stand for?", A: "It stands for Read-Only Memory." },
+        { Q: "What is a keyboard used for?", A: "It's used for typing, entering data into a computer." },
+        { Q: "What do you use to hear something from a computer?", A: "A speaker." },
+        { Q: "What's BIOS?", A: "It stands for Basic Input/Output System." },
+        { Q: "Which is a storage device, Hard Disk or Keyboard?", A: "Hard Disk is a storage device." },
+        { Q: "Microphone is an input device or output device?", A: "It's an input device." },
+        { Q: "Monitor is an input device or output device?", A: "It's an output device." },
+        { Q: "What will you use to print blue stars on a paper?", A: "I'll use a printer." },
+        { Q: "Where do deleted files go to?", A: "They go to the Recycle Bin." },
+        { Q: "What's the shortcut for Copy?", A: "It's Ctrl + C." },
+        { Q: "What's the shortcut for Paste?", A: "It's Ctrl + V." },
+        { Q: "What would you do if you accidentally delete something?", A: "I'd press Ctrl + Z to undo the action." },
+        { Q: "How many bits are in one byte?", A: "One byte is equal to eight bits." },
+        { Q: "How many kilobytes (KB) are in 1 megabyte (MB)?", A: "There are 1024 KB in 1 MB." },
+        { Q: "How many megabytes (MB) are in 1 gigabyte (GB)?", A: "There are 1024 MB in 1 GB." },
+        { Q: "What is a group of interconnected computers called?", A: "It's called a computer network." },
+        { Q: "What's LAN?", A: "It stands for Local Area Network." },
+        { Q: "What's PAN?", A: "It stands for Personal Area Network." },
+        { Q: "What's MAN?", A: "It stands for Metropolitan Area Network." },
+        { Q: "What's WAN?", A: "It stands for Wide Area Network." },
+        { Q: "What communication channels are used in LAN?", A: "Cables and Wi-Fi." },
+        { Q: "What cables use light signals to transmit data?", A: "Fibre-optic cables." },
+
+        // Science
+        { Q: "What does a plant need to survive?", A: "It needs air, water, and sunlight." },
+        { Q: "Can a plant survive without sunlight?", A: "No, it can’t." },
+        { Q: "What plant part makes food for a plant?", A: "The leaves make food for a plant." },
+        { Q: "What are the five senses?", A: "They are sight, hearing, smell, taste, and touch." },
+        { Q: "Cotton is natural or man-made?", A: "It’s natural. It comes from the cotton plant." },
+        { Q: "Plastic is natural or man-made?", A: "It’s man-made." },  
+        { Q: "What is glass made from?", A: "Glass is made from sand." },
+        { Q: "Paper is waterproof or non-waterproof?", A: "Paper is non-waterproof." },
+        { Q: "Metal is waterproof or non-waterproof?", A: "Metal is waterproof." },
+        { Q: "Can we change the shape of metal by heating?", A: "Yes, we can." },
+        { Q: "What do you call the young of a frog?", A: "It’s called a tadpole." },
+        { Q: "How do we get nutrition?", A: "We get nutrition by eating." },
+        { Q: "What's reproduction?", A: "It’s a process of producing young from parents." },
+        { Q: "What’s the difference between living things and non-living things?", A: "Living things carry out life processes; non-living things don’t." },
+
+        // General knowledge
+        { Q: "What's the largest country in the world?", A: "Russia." },
+        { Q: "What's the smallest country in the world?", A: "Vatican City." },
+        { Q: "What's the biggest land animal in the world?", A: "Elephant." },
+        { Q: "What's the biggest animal in the world?", A: "Blue whale." },
+        { Q: "What's the smallest bird in the world?", A: "Hummingbird." },
+        { Q: "What's the tallest mountain in the world?", A: "Mount Everest." },
+        { Q: "What's the largest ocean in the world?", A: "Pacific Ocean." },
+        { Q: "What's the smallest ocean in the world?", A: "Arctic Ocean." },             
+        { Q: "What's the longest river in the world?", A: "The Nile." },                  
+        { Q: "Who is the richest man in 2025?", A: "Elon Musk." },
+      ];
+
+
+      const hotPhrase = [
+        ["Ready to roll, bring the challenge 🚀😎", "Bring it on! I’m all ears 🤓🎉"],
+        ["I’m ready! Who’s brave enough to start? 😎🚀", "Hmm… think you can handle my questions? 🤓✨"],
+        ["Ready to be challenged! Step up and ask 😎💥", "Bring it! I won’t go easy on you 🤓🎉"],
+        ["Let’s do this! Ask your best 😎🚀", "Challenge accepted, I’m ready to shine 🌟💃"],
+        ["Game face on—let’s see what you’ve got 🏆⚡", "I’m all set—let the fun begin 🌸✨"],
+      ];
+
+      const qBoy = document.getElementById("qBoy");
+      const qGirl = document.getElementById("qGirl");
+      const dialogBoy = document.getElementById("diB");
+      const dialogGirl = document.getElementById("diG");
+      const bgMusic = new Audio('bot-bg-music.mp3');
+      bgMusic.loop = true;
+      bgMusic.volume = 0.3;
+      document.addEventListener("click", () => bgMusic.play());
+
+      // adding questions to each panel
+      function addQuestion(panelId, panelClass) {
+        const qContainer = document.getElementById(panelId);
+
+        data.forEach((q, index) => {
+          const question = document.createElement("li");
+          question.className = panelClass;
+          question.textContent = q.Q;
+          question.tabIndex = 0;
+          question.dataset.index = index; // store position in data[]
+          qContainer.appendChild(question);
+        });
+
+        // ✅ Attach one event listener to the container
+        qContainer.addEventListener("click", (e) => {
+          if (e.target.tagName === "LI") {
+            const index = e.target.dataset.index;
+            const parentId = e.target.parentElement.id;
+            const question = data[index].Q;
+            const answer = data[index].A;
+            showQnA(question, answer, panelId);
+          }
+        });
+      }
+
+      addQuestion("qBoy", "q-boy-girl q-boy");
+      addQuestion("qGirl", "q-boy-girl q-girl");
+
+      // Making the questions scrollable in an infinite loop
+      function makeInfiniteScroll(panel) {
+        // Clone children
+        const clone = panel.cloneNode(true);
+        while (clone.firstChild) {
+          panel.appendChild(clone.firstChild);
+        }
+
+        // ✅ Record the original (before cloning) height
+        const originalHeight = panel.scrollHeight / 2;
+
+        panel.addEventListener("scroll", () => {
+          const { scrollTop, scrollHeight, clientHeight } = panel;
+
+          // If reached bottom → reset exactly to the same offset at the top half
+          if (scrollTop >= originalHeight) {
+            panel.scrollTop = scrollTop % originalHeight;
+          }
+
+          // If reached top → reset to the bottom half at the same offset
+          else if (scrollTop <= 0) {
+            panel.scrollTop = scrollTop + originalHeight;
+          }
+        });
+      }
+
+      makeInfiniteScroll(qBoy);
+      makeInfiniteScroll(qGirl);
+
+      // typing text effect
+      function typeText(element, text, speed, token) {
+        let i = 0;
+
+        return new Promise(resolve => {
+          const intervalId = setInterval(() => {
+            if (token.canceled === true) {
+              clearInterval(intervalId);
+              resolve("canceled");
+              return;
+            }
+
+            element.textContent += text.charAt(i);
+            i++;
+
+            if (i >= text.length) {
+              clearInterval(intervalId);
+              resolve("done");
+            }
+          }, speed);
+        })
+      }
+
+      // Making the dialog wait its turn
+      let currentTask = null;
+      let hideTimeout = null;
+      let hotPhraseTimeout = null;
+
+      function scheduleHotPhrase(token) {
+        if (!token.canceled) {
+          hideTimeout = setTimeout(() => {
+            if (token.canceled) return;
+            dialogBoy.style.display = "none";
+            dialogGirl.style.display = "none";
+
+            if (!token.canceled) {
+              hotPhraseTimeout = setTimeout(() => {
+                const [boyPhrase, girlPhrase] = hotPhrase[Math.floor(Math.random() * hotPhrase.length)];
+                dialogBoy.style.display = "block";
+                dialogGirl.style.display = "block";
+                dialogBoy.textContent = boyPhrase;
+                dialogGirl.textContent = girlPhrase;
+              }, 2000);
+            }
+          }, 4000);
+        }
+      };
+
+      async function showQnA(question, answer, parentId) {
+        dialogBoy.textContent = "";
+        dialogGirl.textContent = "";
+
+        dialogBoy.style.display = "none";
+        dialogGirl.style.display = "none";
+
+        if (currentTask) currentTask.canceled = true;
+        if (hideTimeout) clearTimeout(hideTimeout);
+        if (hotPhraseTimeout) clearTimeout(hotPhraseTimeout);
+
+        let token = {canceled: false};
+        currentTask = token;
+
+        if (parentId === "qBoy") {
+          dialogBoy.style.display = "block";
+          await typeText(dialogBoy, question, 50, token);
+          if (token.canceled) return;
+          dialogGirl.style.display = "block";
+          await typeText(dialogGirl, answer, 50, token);
+          if (token.canceled) return;
+
+          scheduleHotPhrase(token);
+        }
+
+        if (parentId === "qGirl") {
+          dialogGirl.style.display = "block";
+          await typeText(dialogGirl, question, 50, token);
+          if (token.canceled) return;
+          dialogBoy.style.display = "block";
+          await typeText(dialogBoy, answer, 50, token);
+          if (token.canceled) return;
+
+          scheduleHotPhrase(token);
+        }
+      }
+
+    </script>
+  </body>
+</html>
