@@ -204,7 +204,7 @@
         background-color: white;
         margin: auto;
         border-radius: 1rem;
-        background-image: url("./images/summary-bg.jpg");
+        background-image: url("assets/images/summary-bg.jpg");
         background-repeat: no-repeat;
         background-size: cover;
         background-position: center;
@@ -307,8 +307,8 @@
         const typeOfCollection = document.getElementById("typeOfCollection");
         const startBtn = document.getElementById("start-btn");
         const doneBtn = document.getElementById("doneBtn");
-        const plusSound = new Audio("./sounds/correct.mp3");
-        const minusSound = new Audio("./sounds/incorrect.mp3");
+        const plusSound = new Audio("assets/sounds/correct.mp3");
+        const minusSound = new Audio("assets/sounds/incorrect.mp3");
         let collectionType = "";
         let report = {};
         let itemPanelHeight = 0;
@@ -410,13 +410,13 @@
           itemPanel.innerHTML = "";
 
           if (type === "star") {
-            goodItem = "./images/blue-star.png";
-            badItem = "./images/black-star.png";
-            bestItem = "./images/smiling-star.png";
+            goodItem = "assets/images/blue-star.png";
+            badItem = "assets/images/black-star.png";
+            bestItem = "assets/images/smiling-star.png";
           } else if (type === "coin") {
-            goodItem = "./images/silver-coin.png";
-            badItem = "./images/stone.png";
-            bestItem = "./images/gold-coin.png";
+            goodItem = "assets/images/silver-coin.png";
+            badItem = "assets/images/stone.png";
+            bestItem = "assets/images/gold-coin.png";
           }
 
           if (scoreNum > 0 && scoreNum <= maxItems) {
@@ -467,7 +467,7 @@
         }
 
         doneBtn.addEventListener("click", () => {
-          const summarySound = new Audio("./sounds/victory.mp3");
+          const summarySound = new Audio("assets/sounds/victory.mp3");
           summarySound.play();
           const teams = gameContainer.querySelectorAll(".team");
           for (let team of teams) {
@@ -485,10 +485,10 @@
           summaryContainer.classList.remove("hidden");
 
           const starHeads = [
-            "./images/first-star.png",
-            "./images/second-star.png",
-            "./images/third-star.png",
-            "./images/fourth-star.png"
+            "assets/images/first-star.png",
+            "assets/images/second-star.png",
+            "assets/images/third-star.png",
+            "assets/images/fourth-star.png"
           ];
           const colors = ["green", "blue", "yellow", "red"];
           let i = 0; // a flag to update the background colors of team blocks

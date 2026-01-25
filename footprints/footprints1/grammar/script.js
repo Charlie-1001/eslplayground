@@ -39,6 +39,12 @@ function populateSelect() {
     unitSelection.appendChild(option);
   })
   // update the topics based on the current unit
+  updateTopics();
+}
+
+// update the topics accordingly
+function updateTopics() {
+  topicSelection.innerHTML = "";
   const selectedUnit = data.find(item => item.unit === unitIndex);
   selectedUnit.structures.forEach(item => {
     const option = document.createElement("option");
@@ -59,6 +65,7 @@ unitSelection.addEventListener("change", (e) => {
   unitIndex = e.target.value;
   topicIndex = data.find(unit => unit.unit === unitIndex).structures[0].id;
   currentUnitAndTopic();
+  updateTopics();
   populateBubbles();
 })
 
