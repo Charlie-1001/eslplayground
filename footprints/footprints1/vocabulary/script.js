@@ -83,7 +83,8 @@ function generateQuestion(letterBox, imageSection) {
     letterSpan.textContent = letter;
     letterSpan.className = "scrumbled-letter";
     letterSpan.draggable = true;
-    letterSpan.addEventListener("pointerdown", startDrag);
+    letterSpan.addEventListener("touchstart", startDrag, { passive: false });
+    letterSpan.addEventListener("mousedown", startDrag)
     letterBox.appendChild(letterSpan);
   });
   const currentImage = document.createElement("img");
@@ -253,77 +254,91 @@ function gameSummary() {
   }
 }
 
-// --- MULTI-POINTER TRACKING section ---
-const pointerDrags = new Map(); // the touch or click data
-// dragging start functions
+// The drag and drop functions
+const touchDrags = new Map();
+
+// --- DRAG START ---
 function startDrag(e) {
   e.preventDefault();
-  const target = e.currentTarget;
-  const rect = target.getBoundingClientRect();
-  const offsetX = e.clientX - rect.left;
-  const offsetY = e.clientY - rect.top;
-  const originalParent = target.parentNode;
-  target.classList.add('dragging');
-  target.style.position = 'absolute';
-  target.style.zIndex = '1000';
-  document.body.appendChild(target);
-  moveAt(e.clientX, e.clientY, target, offsetX, offsetY);
-  pointerDrags.set(e.pointerId, {
-    bubble: target,
-    offsetX,
-    offsetY,
-    originalParent,
-  });
-  document.addEventListener('pointermove', onMove);
-  document.addEventListener('pointerup', onDrop);
+  const isTouch = e.type === 'touchstart';
+  const touches = isTouch ? e.changedTouches : [e];
+  for (const touch of touches) {
+    const clientX = isTouch ? touch.clientX : e.clientX;
+    const clientY = isTouch ? touch.clientY : e.clientY;
+    const id = isTouch ? touch.identifier : 'mouse';
+    const target = e.currentTarget;
+    const panelOrigin = target.parentNode;
+    const rect = target.getBoundingClientRect();
+    const offsetX = clientX - rect.left;
+    const offsetY = clientY - rect.top;
+    target.classList.add('dragging');
+    moveAt(clientX, clientY, target, offsetX, offsetY);
+    touchDrags.set(id, { bubble: target, offsetX, offsetY, panelOrigin});
+    if (isTouch) {
+      document.addEventListener('touchmove', onMove, { passive: false });
+      document.addEventListener('touchend', onDrop);
+    } else {
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onDrop);
+    }
+  }
 }
 
-// --- drag moving funcitons ---
+// --- DRAG MOVE ---
 function onMove(e) {
-  const dragData = pointerDrags.get(e.pointerId);
-  if (!dragData) return;
-  moveAt(
-    e.clientX,
-    e.clientY,
-    dragData.bubble,
-    dragData.offsetX,
-    dragData.offsetY
-  );
+  const isTouch = e.type === 'touchmove';
+  const touches = isTouch ? e.changedTouches : [e];
+  for (const touch of touches) {
+    const id = isTouch ? touch.identifier : 'mouse';
+    const dragData = touchDrags.get(id);
+    if (!dragData) continue;
+    moveAt(touch.clientX, touch.clientY, dragData.bubble, dragData.offsetX, dragData.offsetY);
+  }
 }
 
-// the moving point on each text bubbles
 function moveAt(x, y, bubble, offsetX, offsetY) {
   bubble.style.left = x - offsetX + 'px';
   bubble.style.top = y - offsetY + 'px';
 }
 
-// --- dropping the drags ---
+// --- DRAG DROP ---
 function onDrop(e) {
-  const dragData = pointerDrags.get(e.pointerId);
-  if (!dragData) return;
-  const { bubble, originalParent } = dragData;
-  const target = document.elementFromPoint(e.clientX, e.clientY);
-  const dropzone = originalParent;
-  bubble.classList.remove('dragging');
-  bubble.style.position = '';
-  bubble.style.zIndex = '';
-  if (dropzone) {
-    bubble.classList.add('scrumbled-letter');
-    const all = dropzone.children;
-    let inserted = false;
-    for (const b of all) {
-      const rect = b.getBoundingClientRect();
-      if (e.clientX < rect.left + rect.width / 2) {
-        dropzone.insertBefore(bubble, b);
-        inserted = true;
-        break;
+  const isTouch = e.type === 'touchend';
+  const touches = isTouch ? e.changedTouches : [e];
+  document.body.style.cursor = '';
+  for (const touch of touches) {
+    const id = isTouch ? touch.identifier : 'mouse';
+    const dragData = touchDrags.get(id);
+    if (!dragData) continue;
+    const panelOrigin = dragData.panelOrigin;
+    const bubble = dragData.bubble;
+    const clientX = touch.clientX;
+    const clientY = touch.clientY;
+    const target = document.elementFromPoint(clientX, clientY);
+    
+    if (panelOrigin) {
+      bubble.classList.remove('dragging');
+      const all = Array.from(panelOrigin.children);
+      let inserted = false;
+      for (let b of all) {
+        const rect = b.getBoundingClientRect();
+        if (clientX < rect.left + rect.width / 2) {
+          panelOrigin.insertBefore(bubble, b);
+          inserted = true;
+          break;
+        }
       }
+      if (!inserted) panelOrigin.appendChild(bubble);
+    } else {
+      bubble.classList.remove('dragging');
+      panelOrigin.appendChild(bubble);
     }
-    if (!inserted) dropzone.appendChild(bubble);
-  }
-  pointerDrags.delete(e.pointerId);
-  if (pointerDrags.size === 0) {
-    document.removeEventListener('pointermove', onMove);
-    document.removeEventListener('pointerup', onDrop);
+    touchDrags.delete(id);
+    if (touchDrags.size === 0) {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onDrop);
+      document.removeEventListener('touchmove', onMove);
+      document.removeEventListener('touchend', onDrop);
+    }
   }
 }

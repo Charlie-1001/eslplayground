@@ -52,42 +52,57 @@ function createBubble(teamId, letterPanel) {
       bubble.textContent = word;
       bubble.dataset.team = teamId;
       bubble.dataset.panelOrigin = letterPanel;
-      bubble.addEventListener('pointerdown', startDrag);
+      bubble.addEventListener('touchstart', startDrag, {passive: false});
+      bubble.addEventListener('mousedown', startDrag);
       letterPanel.appendChild(bubble);
     });
 }
 createBubble("team1", letterPanel1);
 createBubble("team2", letterPanel2);
 
-// --- MULTI-POINTER TRACKING ---
-const pointerDrags = new Map();
+// The drag and drop functions
+const touchDrags = new Map();
+
 // --- DRAG START ---
 function startDrag(e) {
   e.preventDefault();
-  const target = e.currentTarget;
-  const letterPanel = target.closest('.letter-panel');
-  const rect = target.getBoundingClientRect();
-  const offsetX = e.clientX - rect.left;
-  const offsetY = e.clientY - rect.top;
-  const dragged = letterPanel ? target.cloneNode(true) : target;
-  if (!letterPanel) target.parentElement.removeChild(target);
-  dragged.classList.add('dragging');
-  dragged.style.position = 'absolute';
-  dragged.style.zIndex = '1000';
-  dragged.dataset.team = target.dataset.team;
-  dragged.textContent = target.textContent;
-  document.body.appendChild(dragged);
-  moveAt(e.clientX, e.clientY, dragged, offsetX, offsetY);
-  pointerDrags.set(e.pointerId, { bubble: dragged, offsetX, offsetY });
-  document.addEventListener('pointermove', onMove);
-  document.addEventListener('pointerup', onDrop);
+  const isTouch = e.type === 'touchstart';
+  const touches = isTouch ? e.changedTouches : [e];
+  for (const touch of touches) {
+    const clientX = isTouch ? touch.clientX : e.clientX;
+    const clientY = isTouch ? touch.clientY : e.clientY;
+    const id = isTouch ? touch.identifier : 'mouse';
+    const target = e.currentTarget;
+    const panelOrigin = target.parentNode;
+    const rect = target.getBoundingClientRect();
+    const offsetX = clientX - rect.left;
+    const offsetY = clientY - rect.top;
+    const draggedBubble = target.parentNode.className === "letter-panel" ? target.cloneNode(true) : target;
+    draggedBubble.classList.add('dragging');
+    document.body.appendChild(draggedBubble); // append the clonded bubbles to the DOM
+    moveAt(clientX, clientY, draggedBubble, offsetX, offsetY);
+    touchDrags.set(id, { bubble: draggedBubble, offsetX, offsetY, panelOrigin});
+    if (isTouch) {
+      document.addEventListener('touchmove', onMove, { passive: false });
+      document.addEventListener('touchend', onDrop);
+    } else {
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onDrop);
+    }
+  }
 }
 
 // --- DRAG MOVE ---
 function onMove(e) {
-  const dragData = pointerDrags.get(e.pointerId);
-  if (!dragData) return;
-  moveAt(e.clientX, e.clientY, dragData.bubble, dragData.offsetX, dragData.offsetY);
+  const isTouch = e.type === 'touchmove';
+  const touches = isTouch ? e.changedTouches : [e];
+
+  for (const touch of touches) {
+    const id = isTouch ? touch.identifier : 'mouse';
+    const dragData = touchDrags.get(id);
+    if (!dragData) continue;
+    moveAt(touch.clientX, touch.clientY, dragData.bubble, dragData.offsetX, dragData.offsetY);
+  }
 }
 
 function moveAt(x, y, bubble, offsetX, offsetY) {
@@ -97,35 +112,46 @@ function moveAt(x, y, bubble, offsetX, offsetY) {
 
 // --- DRAG DROP ---
 function onDrop(e) {
-  const dragData = pointerDrags.get(e.pointerId);
-  if (!dragData) return;
-  const bubble = dragData.bubble;
-  const target = document.elementFromPoint(e.clientX, e.clientY);
-  const dropzone = target?.closest('.dropzone');
-  if (dropzone && dropzone.closest('.team').id === bubble.dataset.team) {
-    bubble.classList.remove('dragging');
-    bubble.style.position = "";
-    bubble.style.zIndex = "";
-    bubble.classList.add('new-bubble');
-    bubble.addEventListener('pointerdown', startDrag);
-    const all = Array.from(dropzone.querySelectorAll('.new-bubble'));
-    let inserted = false;
-    for (let b of all) {
-      const rect = b.getBoundingClientRect();
-      if (e.clientX < rect.left + rect.width / 2) {
-        dropzone.insertBefore(bubble, b);
-        inserted = true;
-        break;
+  const isTouch = e.type === 'touchend';
+  const touches = isTouch ? e.changedTouches : [e];
+  document.body.style.cursor = '';
+  for (const touch of touches) {
+    const id = isTouch ? touch.identifier : 'mouse';
+    const dragData = touchDrags.get(id);
+    if (!dragData) continue;
+    const panelOrigin = dragData.panelOrigin;
+    const bubble = dragData.bubble;
+    const clientX = touch.clientX;
+    const clientY = touch.clientY;
+    const target = document.elementFromPoint(clientX, clientY);
+    const dropzone = target?.closest('.dropzone');
+    
+    if ((dropzone && dropzone.closest('.team').id === panelOrigin.closest('.team').id)) {
+      bubble.classList.remove('dragging');
+      bubble.classList.add('new-bubble');
+      bubble.addEventListener("touchstart", startDrag, {passive: true});
+      bubble.addEventListener("mousedown", startDrag);
+      const all = Array.from(dropzone.querySelectorAll('.new-bubble'));
+      let inserted = false;
+      for (let b of all) {
+        const rect = b.getBoundingClientRect();
+        if (clientX < rect.left + rect.width / 2) {
+          dropzone.insertBefore(bubble, b);
+          inserted = true;
+          break;
+        }
       }
+      if (!inserted) dropzone.appendChild(bubble);
+    } else {
+      bubble.remove();
     }
-    if (!inserted) dropzone.appendChild(bubble);
-  } else {
-    bubble.remove();
-  }
-  pointerDrags.delete(e.pointerId);
-  if (pointerDrags.size === 0) {
-    document.removeEventListener('pointermove', onMove);
-    document.removeEventListener('pointerup', onDrop);
+    touchDrags.delete(id);
+    if (touchDrags.size === 0) {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onDrop);
+      document.removeEventListener('touchmove', onMove);
+      document.removeEventListener('touchend', onDrop);
+    }
   }
 }
 

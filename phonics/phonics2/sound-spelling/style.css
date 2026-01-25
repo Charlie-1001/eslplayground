@@ -129,7 +129,6 @@ header {
 }
 
 .bubble,
-.small-bubble,
 .new-bubble {
   background-color: yellow;
   color: red;
@@ -149,17 +148,19 @@ header {
   font-size: 2.5rem;
 }
 
-.small-bubble {
-  height: 3rem;
-  width: 4rem;
-  margin: 0.1rem;
-  font-size: 2rem;
-} 
-
 .new-bubble {
   height: 6rem;
   width: 7rem;
   font-size: 4rem;
+}
+
+.dragging {
+  pointer-events: none;
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.8;
+  background-color: orangered;
+  color: yellow;
 }
 
 .summary-panel {
@@ -198,12 +199,6 @@ header {
   font-size: 1.7rem;
   font-weight: bold;
   ;
-}
-
-.dragging {
-  pointer-events: none;
-  opacity: 0.8;
-  background-color: yellow;
 }
 
 @media (max-width: 600px) {
