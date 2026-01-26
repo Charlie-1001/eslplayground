@@ -48,7 +48,7 @@ function createBubble(teamId, letterPanel) {
     const currentWordList = currentUnit.wordList;
     currentWordList.forEach(word => {
       const bubble = document.createElement('div');
-      bubble.className = currentUnit.unit === "Testing" ? "small-bubble" : "bubble";
+      bubble.className = currentUnit.unit === "Testing" ? "spell-bubble" : "bubble";
       bubble.textContent = word;
       bubble.dataset.team = teamId;
       bubble.dataset.panelOrigin = letterPanel;

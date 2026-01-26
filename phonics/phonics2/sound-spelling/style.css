@@ -129,6 +129,7 @@ header {
 }
 
 .bubble,
+.spell-bubble,
 .new-bubble {
   background-color: yellow;
   color: red;
@@ -152,6 +153,12 @@ header {
   height: 6rem;
   width: 7rem;
   font-size: 4rem;
+}
+
+.spell-bubble {
+  height: 3rem;
+  width: 4rem;
+  font-size: 2rem;
 }
 
 .dragging {
