@@ -113,7 +113,7 @@ export const data = [
     title: "u ug ud up",
     wordList: [
       { word: "sun", imageUrl: "../assets/images/sun.png" },
-      { word: "up", imageUrl: "../assets/images/hat.png" },
+      { word: "up", imageUrl: "../assets/images/up.png" },
       { word: "jug", imageUrl: "../assets/images/jug.png" },
       { word: "hug", imageUrl: "../assets/images/hug.png" },
       { word: "bug", imageUrl: "../assets/images/bug.png" },
