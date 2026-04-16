@@ -30,6 +30,7 @@ const miniGameData = [
   { name: "NPS Genius", imgSrc: "assets/images/nps-genius.png", link: "mini-games/nps-genius/index.html"},
   { name: "Lower Level Quiz", imgSrc: "assets/images/lower-quiz.png", link: "mini-games/quiz-games/lowerLevel.html"},
   { name: "Higher Level Quiz", imgSrc: "assets/images/higher-quiz.png", link: "mini-games/quiz-games/higherLevel.html"},
+  { name: "Star Collector Game", imgSrc: "assets/images/star-collector.png", link: "mini-games/star-collector-game/docs/index.html"},
 ];
 
 const categoryContainer = document.getElementById("category");
@@ -48,7 +49,7 @@ categories.forEach(cat => {
   catDiv.innerHTML = `
     <a href="${cat.link}">
       <img src="${cat.image}" alt="${cat.name}">
-      <h3>${cat.name}</h3>        
+      <h3>${cat.name}</h3>
     </a>
   `;
   categoryContainer.appendChild(catDiv);
