@@ -31,7 +31,7 @@ const miniGameData = [
   { name: "Lower Level Quiz", imgSrc: "assets/images/lower-quiz.png", link: "mini-games/quiz-games/lowerLevel.html"},
   { name: "Higher Level Quiz", imgSrc: "assets/images/higher-quiz.png", link: "mini-games/quiz-games/higherLevel.html"},
   { name: "Star Collector Game", imgSrc: "assets/images/star-collector.png", link: "mini-games/star-collector-game/docs/index.html"},
-  { name: "Mouse Training Game", imgSrc: "assets/images/mouse-training-game.png", link: "mini-games/star-collector-game/docs/index.html"},
+  { name: "Mouse Training Game", imgSrc: "assets/images/mouse-training-game.png", link: "mini-games/mouse-training-game/docs/index.html"},
 ];
 
 const categoryContainer = document.getElementById("category");

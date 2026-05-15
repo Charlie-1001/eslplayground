@@ -1,3 +1,12 @@
+:root {
+  --background: #EFE9AE;
+  --cards: #FFF9EC;
+  --primary-actions: #4C1A57;
+  --secondary-actions: #0F5257;
+  --highlights: #F18805;
+  --feedback: #DA667B;
+}
+
 html {
   scroll-behavior: smooth;
 }
